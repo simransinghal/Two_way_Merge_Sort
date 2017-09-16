@@ -48,6 +48,14 @@ void NewSort(char **words, int col_arg[], int start, int end, int asc)
   }
 }
 
+void add_to_OutputFile(char **words, char filename[] ,int n) {
+  FILE *f = fopen(filename, "w");
+  int i = 0;
+  for(i; i < n; i++)
+    f << words[i];
+  fclose(f);  
+}
+
 int main(int argc, char *argv[])
 {
   arguments = argc;
@@ -125,9 +133,7 @@ while (fgets(w, BUFSIZE, f)) {
 }
 fclose(f);
 
-char **words = (char**)malloc(no_Load_Records * sizeof(char*));
 FILE *input = fopen(argv[1], "r");
-
 if(input == NULL)
 {
   std::cout << "Error: Could not open file input.txt" << std::endl;
@@ -135,16 +141,24 @@ if(input == NULL)
 }
 
 i = 0;
+char **words = (char**)malloc(no_Load_Records * sizeof(char*));
 words[i] = (char *)malloc(BUFSIZE);
 int ct_load_input = 0;
+int ct_output_files = 0;
+
 while (fgets(words[i], BUFSIZE, input)) {
   words[i][strlen(words[i]) - 1] = '\0';
 
   if (i + 1 == no_Load_Records || ct_load_input + 1 == ct_lines_input)
   {
     NewSort(words, col_arg, 0, i + 1, asc);
-    for(int j = 0; j < i + 1  ; j++)
-      std::cout << words[j] << std::endl;
+    //for(int j = 0; j < i + 1  ; j++)
+      //std::cout << words[j] << std::endl;
+    char out_filename[20];
+    sprintf(out_filename, "%s%d%s", "out", ct_output_files, ".txt");
+    add_to_OutputFile(words, out_filename, i + 1);
+    std::cout << out_filename << std::endl;
+
     break;
   }
   i = i + 1;
