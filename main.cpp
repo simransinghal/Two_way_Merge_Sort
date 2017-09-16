@@ -12,42 +12,6 @@ struct attribute{
 struct attribute *attr_ptr;
 int arguments = 0;
 
-int swap(char **words, int col_arg[], int index1, int index2, int asc)
-{
-  for(int i = 0; i < arguments - 5; i++)
-  {
-    int substring_ind = 0;
-    char subString1[strlen(words[index1])], subString2[strlen(words[index2])];
-
-    for(int j = 0; j < col_arg[i]; j++)
-    {
-      substring_ind = substring_ind + attr_ptr[j].size + 2;
-    }
-
-    //char subString1[6], subString2[6];
-    strncpy(subString1, words[index1] + substring_ind, attr_ptr[col_arg[i]].size);
-    //strncpy(subString1, words[index1] + 0, 5 );
-    subString1[substring_ind + attr_ptr[col_arg[i]].size] = '\0';
-    //std::cout << subString1 << '\n';
-    strncpy(subString2, words[index2], attr_ptr[col_arg[i]].size);
-    subString2[substring_ind + attr_ptr[col_arg[i]].size] = '\0';
-
-    if ((strcmp (subString1, subString2) > 0 && asc == 1) || (strcmp (subString1, subString2) < 0 && asc == 0))
-    {
-        std::cout << subString1 << ' ' << subString2 << std::endl;
-        char *temp;
-        temp = words[index1];
-        words[index1] = words[index2];
-        words[index2] = temp;
-        return 0;
-    }
-    else if((strcmp (subString1, subString2) < 0 && asc == 1) || (strcmp (subString1, subString2) > 0 && asc == 0))
-      return -1;
-  }
-
-  return -1;
-}
-
 void NewSort(char **words, int col_arg[], int start, int end, int asc)
 {
   for(int i = 0; i < end; i++)
@@ -148,19 +112,6 @@ int main(int argc, char *argv[])
       }
     }
   }
-/*
-  char store_lines[no_lo] = {{'\0','\0'}};
-
-  FILE *input;
-  input = fopen(argv[1], "r");
-  char input_line[record_size + 2*metadata_lines];
-  i = 0;
-  while (fgets(input_line, sizeof(input_line), metadata))
-  {
-
-    i = i + 1;
-  }
-*/
 
 int BUFSIZE = record_size + 4*metadata_lines;
 char **words = (char**)malloc(no_Load_Records * sizeof(char*));
@@ -182,8 +133,8 @@ while (fgets(words[i], BUFSIZE, input)) {
   //if (i + 1 == no_Load_Records)
   if(i + 1 == 100)
   {
-    NewSort(words, col_arg, 0, no_Load_Records, asc);
-    for(int j = 0; j < no_Load_Records  ; j++)
+    NewSort(words, col_arg, 0, i + 1, asc);
+    for(int j = 0; j < i + 1  ; j++)
       std::cout << words[j] << std::endl;
     break;
   }
