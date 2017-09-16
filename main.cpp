@@ -113,9 +113,19 @@ int main(int argc, char *argv[])
     }
   }
 
+
 int BUFSIZE = record_size + 4*metadata_lines;
+
+FILE *f = fopen(argv[1], "r");
+char w[BUFSIZE];
+int ct_lines_input = 0;
+
+while (fgets(w, BUFSIZE, f)) {
+  ct_lines_input++;
+}
+fclose(f);
+
 char **words = (char**)malloc(no_Load_Records * sizeof(char*));
-//char* words[no_Load_Records];
 FILE *input = fopen(argv[1], "r");
 
 if(input == NULL)
@@ -126,12 +136,11 @@ if(input == NULL)
 
 i = 0;
 words[i] = (char *)malloc(BUFSIZE);
+int ct_load_input = 0;
 while (fgets(words[i], BUFSIZE, input)) {
-
   words[i][strlen(words[i]) - 1] = '\0';
 
-  //if (i + 1 == no_Load_Records)
-  if(i + 1 == 100)
+  if (i + 1 == no_Load_Records || ct_load_input + 1 == ct_lines_input)
   {
     NewSort(words, col_arg, 0, i + 1, asc);
     for(int j = 0; j < i + 1  ; j++)
@@ -139,6 +148,7 @@ while (fgets(words[i], BUFSIZE, input)) {
     break;
   }
   i = i + 1;
+  ct_load_input++;
   words[i] = (char *)malloc(BUFSIZE);
  }
 fclose(input);
