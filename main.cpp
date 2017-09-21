@@ -64,8 +64,41 @@ void add_to_OutputFile(char **words, char filename[] ,int n) {
 
 }
 
+int small_substring(char *wfirst, char *wsecond)
+{
+  for(int z = 0; z < arguments - 5; z++)
+    {
+      int substring_ind = 0;
+      char subString1[strlen(wfirst)], subString2[strlen(wsecond)];
+      for(int k = 0; k < col_arg[z]; k++)
+      {
+        substring_ind = substring_ind + attr_ptr[k].size + 2;
+      }
+
+      strncpy(subString1, wfirst + substring_ind, attr_ptr[col_arg[z]].size);
+      subString1[substring_ind + attr_ptr[col_arg[z]].size] = '\0';
+
+      strncpy(subString2, wsecond + substring_ind, attr_ptr[col_arg[z]].size);
+      subString2[substring_ind + attr_ptr[col_arg[z]].size] = '\0';
+
+      if ((strcmp (subString1, subString2) > 0 && asc == 1) || (strcmp (subString1, subString2) < 0 && asc == 0))
+      {
+          return 2;
+          break;
+      }
+      else if((strcmp (subString1, subString2) < 0 && asc == 1) || (strcmp (subString1, subString2) > 0 && asc == 0))
+        {
+          return 1;
+          break;
+        }
+    }
+}
+
+
 void merge_files(int ct_files, char out_file[], int BUFSIZE)
 {
+  std::ofstream myfile(out_file);
+
   FILE *f[ct_files];
   int i = 0;
   for(i; i < ct_files; i++)
@@ -75,17 +108,38 @@ void merge_files(int ct_files, char out_file[], int BUFSIZE)
     FILE *f[i] = fopen(filename, "r");
   }
 
+while(1)
+{
+
   FILE *first, *second;
   first = f[0];
   wfirst = (char *)malloc(BUFSIZE);
   wsecond = (char *)malloc(BUFSIZE);
+
+  int first_i = 0;
+
   for(i = 1; i < ct_files; i++)
   {
     if (fgets(wfirst, BUFSIZE, first) == NULL)
       break;
-    second = f[i];
 
+    second = f[i];
+    if (fgets(wsecond, BUFSIZE, second) == NULL)
+      break;
+
+    int flag = small_substring(wfirst, wsecond);
+
+    if(flag == 2)
+    {
+      first = second;
+      first_i = i;
+    }
   }
+
+  f[first_i] = first;
+  myfile << wfirst << '\n';
+}
+
 }
 
 int main(int argc, char *argv[])
