@@ -64,7 +64,7 @@ void add_to_OutputFile(char **words, char filename[] ,int n) {
 
 }
 
-int small_substring(char *wfirst, char *wsecond)
+int small_substring(char *wfirst, char *wsecond, int col_arg[], int asc)
 {
   for(int z = 0; z < arguments - 5; z++)
     {
@@ -95,51 +95,87 @@ int small_substring(char *wfirst, char *wsecond)
 }
 
 
-void merge_files(int ct_files, char out_file[], int BUFSIZE)
+void merge_files(int ct_files, char out_file[], int BUFSIZE, int col_arg[], int asc)
 {
-  std::ofstream myfile(out_file);
 
+  std::ofstream myfile(out_file);
   FILE *f[ct_files];
   int i = 0;
   for(i; i < ct_files; i++)
   {
     char filename[20];
     sprintf(filename, "%s%d%s", "out", i, ".txt");
-    FILE *f[i] = fopen(filename, "r");
+    f[i] = fopen(filename, "r");
   }
 
+int cc = 0;
 while(1)
 {
+  cc++;
+
+  if(cc > 100000)
+    break;
 
   FILE *first, *second;
-  first = f[0];
-  wfirst = (char *)malloc(BUFSIZE);
-  wsecond = (char *)malloc(BUFSIZE);
-
+  int fl = 1;
   int first_i = 0;
+
+  char *wfirst = (char *)malloc(BUFSIZE);
+  char *wsecond = (char *)malloc(BUFSIZE);
+
+  for(i = 0; i < ct_files; i++)
+  {
+    FILE *t;
+    t = f[i];
+    if(fgets(wfirst, BUFSIZE, t) != NULL)
+    {
+      rewind (t);
+      std::cout << "/* message */ " << i << '\n';
+      fl = 0;
+      first = f[i];
+      first_i = i;
+      break;
+    }
+  }
+
+  if(fl == 1)
+    break;
+
+  if (fgets(wfirst, BUFSIZE, first) == NULL)
+  {
+    std::cout << first_i << '\n';
+    break;
+  }
+
+  wfirst[strlen(wfirst) - 1] = '\0';
 
   for(i = 1; i < ct_files; i++)
   {
-    if (fgets(wfirst, BUFSIZE, first) == NULL)
-      break;
-
     second = f[i];
     if (fgets(wsecond, BUFSIZE, second) == NULL)
-      break;
-
-    int flag = small_substring(wfirst, wsecond);
-
-    if(flag == 2)
     {
+      continue;
+    }
+    wsecond[strlen(wsecond) - 1] = '\0';
+    int flag = small_substring(wfirst, wsecond, col_arg, asc);
+
+    if(flag == 1)
+    {
+      rewind(first);
       first = second;
       first_i = i;
+    }
+    else
+    {
+      rewind(second);
     }
   }
 
   f[first_i] = first;
+  //std::cout << wfirst << std::endl;
   myfile << wfirst << '\n';
 }
-
+myfile.close();
 }
 
 int main(int argc, char *argv[])
@@ -243,7 +279,7 @@ while (fgets(words[i], BUFSIZE, input)) {
 
   if(ct_load_input + 1 == ct_lines_input)
   {
-    merge_files(ct_output_files, arg[2], BUFSIZE);
+    merge_files(ct_output_files, argv[2], BUFSIZE, col_arg, asc);
     fclose(input);
     exit (1);
   }
