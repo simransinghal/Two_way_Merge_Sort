@@ -160,14 +160,16 @@ while (fgets(words[i], BUFSIZE, input)) {
   if (i + 1 == no_Load_Records || ct_load_input + 1 == ct_lines_input)
   {
     NewSort(words, col_arg, 0, i + 1, asc);
-    //for(int j = 0; j < i + 1  ; j++)
-      //std::cout << words[j] << std::endl;
     char out_filename[20];
     sprintf(out_filename, "%s%d%s", "out", ct_output_files, ".txt");
+    ct_output_files++;
     add_to_OutputFile(words, out_filename, i + 1);
-    std::cout << out_filename << std::endl;
+  }
 
-    break;
+  if(ct_load_input + 1 == ct_lines_input)
+  {
+    fclose(input);
+    exit (1);
   }
   i = i + 1;
   ct_load_input++;
