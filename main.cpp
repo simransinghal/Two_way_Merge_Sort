@@ -64,6 +64,30 @@ void add_to_OutputFile(char **words, char filename[] ,int n) {
 
 }
 
+void merge_files(int ct_files, char out_file[], int BUFSIZE)
+{
+  FILE *f[ct_files];
+  int i = 0;
+  for(i; i < ct_files; i++)
+  {
+    char filename[20];
+    sprintf(filename, "%s%d%s", "out", i, ".txt");
+    FILE *f[i] = fopen(filename, "r");
+  }
+
+  FILE *first, *second;
+  first = f[0];
+  wfirst = (char *)malloc(BUFSIZE);
+  wsecond = (char *)malloc(BUFSIZE);
+  for(i = 1; i < ct_files; i++)
+  {
+    if (fgets(wfirst, BUFSIZE, first) == NULL)
+      break;
+    second = f[i];
+
+  }
+}
+
 int main(int argc, char *argv[])
 {
   arguments = argc;
@@ -165,6 +189,7 @@ while (fgets(words[i], BUFSIZE, input)) {
 
   if(ct_load_input + 1 == ct_lines_input)
   {
+    merge_files(ct_output_files, arg[2], BUFSIZE);
     fclose(input);
     exit (1);
   }
