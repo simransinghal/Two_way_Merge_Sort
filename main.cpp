@@ -92,8 +92,6 @@ int main(int argc, char *argv[])
   if(argv[4] == a)
     asc = 1;
 
-  //struct attribute attr_ptr[metadata_lines];
-  //for(int i = 0; i < metadata_lines; i++)
   attr_ptr = (struct attribute *)malloc(sizeof(struct attribute) * metadata_lines);
 
   metadata = fopen("metadata.txt", "r");
@@ -128,7 +126,6 @@ int main(int argc, char *argv[])
       }
     }
   }
-
 
 int BUFSIZE = record_size + 4*metadata_lines;
 
@@ -171,6 +168,16 @@ while (fgets(words[i], BUFSIZE, input)) {
     fclose(input);
     exit (1);
   }
+
+  if(i + 1 == no_Load_Records)
+  {
+    int j = 0;
+    for(j; j < i + 1; j++)
+      free(words[j]);
+
+    i = -1;
+  }
+
   i = i + 1;
   ct_load_input++;
   words[i] = (char *)malloc(BUFSIZE);
