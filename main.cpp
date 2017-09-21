@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstring>
 #include <string.h>
+#include <fstream>
 
 struct attribute{
   char name[100];
@@ -49,11 +50,18 @@ void NewSort(char **words, int col_arg[], int start, int end, int asc)
 }
 
 void add_to_OutputFile(char **words, char filename[] ,int n) {
-  FILE *f = fopen(filename, "w");
-  int i = 0;
-  for(i; i < n; i++)
-    f << words[i];
-  fclose(f);  
+
+  std::ofstream myfile(filename);
+  if (myfile.is_open())
+  {
+    int i = 0;
+
+    for(i; i < n; i++)
+      myfile << words[i] << '\n';
+
+    myfile.close();
+  }
+
 }
 
 int main(int argc, char *argv[])
